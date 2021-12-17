@@ -1,0 +1,149 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+<h3>Purchase new books. This page use ajax to crud in purchasebooks table. New purchase will use trigger to update stockQuantity of books table</h3>
+
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        GetAllRecords();
+
+        function GetAllRecords() {
+            $("table tbody").empty();
+            $.getJSON("/api/bookPurchasesAPI",
+                function (data) { bindToGrid(data); });
+        }
+        function bindToGrid(data) {
+            // alert(data.length);
+            for (var i = 0; i < data.length; i++) {
+                var record = data[i];
+                $("table tbody").append(`<tr onclick="ShowSingleRecord('${record.purchaseID}','${record.bookid}','${record.quantity}','${record.purchaseDate}')"><td>${record.purchaseID}</td><td>${record.bookid}</td><td>${record.book.name}</td><td>${record.quantity}</td><td>${record.purchaseDate}</td></tr>`);
+                // alert(i);
+            };
+        }
+        $("#purchase").click(function () {
+
+            $.ajax('/api/bookPurchasesAPI',
+                {
+                    //data: { purchaseID: $("#purchaseID").val(), bookID: $("#bookID").val(), quantity: $("#quantity").val(), purchaseDate: $("#purchaseDate").val() },
+                    data: { bookID: $("#bookid").val(), quantity: $("#quantity").val(), purchaseDate: $("#purchaseDate").val() },
+                    dataType: 'json',
+                    method: 'post',
+                    timeout: 500,
+                    success: function (data, status, xhr) {
+                        $('#feedback').html("Successfuly added");
+                        GetAllRecords();
+                    },
+                    error: function (jqXhr, textStatus, errorMessage) {
+                        $('#feedback').html('Error: ' + errorMessage);
+                    }
+                });
+        });
+        $("#edit").click(function () {
+            $.ajax('/api/bookPurchasesAPI/' + $("#purchaseID").val(),
+                {
+                    data: { purchaseID: $("#purchaseID").val(), bookID: $("#bookid").val(), quantity: $("#quantity").val(), purchaseDate: $("#purchaseDate").val() },
+                    dataType: 'json',
+                    method: 'put',
+                    timeout: 500,
+                    success: function (data, status, xhr) {
+                        $('#feedback').html("Successfuly updated");
+                        GetAllRecords();
+                    },
+                    error: function (jqXhr, textStatus, errorMessage) {
+                        $('#feedback').html('Error: ' + errorMessage);
+                    }
+                });
+        });
+        $("#delete").click(function () {
+
+            $.ajax('/api/bookPurchasesAPI/' + $("#purchaseID").val(),
+                {
+                    dataType: 'json',
+                    method: 'delete',
+                    timeout: 500,
+                    success: function (data, status, xhr) {
+                        $('#feedback').html("Successfuly deleted");
+                        GetAllRecords();
+                    },
+                    error: function (jqXhr, textStatus, errorMessage) {
+                        $('#feedback').html('Error: ' + errorMessage);
+                    }
+                });
+        });
+
+    });
+    function ShowSingleRecord(purchaseID, bookID, quantity, purchaseDate) {
+        $("#purchaseID").val(purchaseID);
+        $("#bookID").val(bookID);
+        $("#quantity").val(quantity);
+        $("#purchaseDate").val(purchaseDate);
+    }
+
+</script>
+
+<style>
+    #purchaseID, #bookID, #quantity, #purchaseDate {
+        /*position:absolute;
+        left: 35%;*/
+    }
+
+    #bookID, #quantity, #purchaseDate {
+        width: 200px;
+    }
+</style>
+
+<div class="row">
+    <div class="col-sm-3">
+        @using (Html.BeginForm("index", "AjaxBookPurchase", FormMethod.Post, new { @class = "form-vertical" }))
+        {
+            <div class="container">
+                <div class="form-group">
+                    <label for="purchaseID"></label>
+                    <input type="hidden" name="purchaseID" id="purchaseID" />
+                </div>
+                <div class="form-group">
+                    <label for="bookID" class="control-label">bookID</label>
+                    @*<input type="number" name="bookID" id="bookID" required/>*@
+                    @Html.DropDownList("bookID", (IEnumerable<SelectListItem>)ViewBag.ddlBooks, new { @class = "form-control" })
+                </div>
+                <div class="form-group">
+                    <label for="quantity">quantity</label>
+                    <input type="number" name="quantity" id="quantity" class="form-control" required="required" />
+
+                </div>
+                <div class="form-group">
+                    <label for="purchaseDate">purchaseDate</label>
+                    <input type="date" name="purchaseDate" id="purchaseDate" class="form-control" required="required" />
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="button" id="purchase" class="btn btn-primary" value="Purchase" />
+                <input type="button" id="edit" class="btn btn-warning" value="Edit" />
+                <input type="button" id="delete" class="btn btn-danger" value="Delete" />
+
+            </div>
+            <div id="feedback"></div>
+        }
+    </div>
+    <div class="col-sm-9">
+        <table class="table">
+            <thead>
+                <tr><th>PurchaseID</th><th>bookID</th><th>book Name</th><th>quantity</th><th>purchaseDate</th></tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+
+
+

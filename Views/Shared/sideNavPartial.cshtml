@@ -1,0 +1,92 @@
+﻿@using Microsoft.AspNet.Identity
+@if (Request.IsAuthenticated)
+{
+    @*<ul class="">
+            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+            <li>@Html.ActionLink("About", "About", "Home")</li>
+            <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+            <li>@Html.ActionLink("Categories", "Index", "categoriesTBs")</li>
+            <li>@Html.ActionLink("Books", "Index", "Books")</li>
+            <li>@Html.ActionLink("Purchase", "Index", "bookPurchases")</li>
+            <li>@Html.ActionLink("Sell", "Index", "bookSales")</li>
+
+
+        </ul>*@
+
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <style>
+        body {
+            font-family: "Lato", sans-serif;
+        }
+
+        .sidenav {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            z-index: 1;
+            top: 50px;
+            left: 0;
+            background-color: #111;
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 60px;
+        }
+
+            .sidenav a {
+                padding: 8px 8px 8px 32px;
+                text-decoration: none;
+                font-size: 25px;
+                color: #818181;
+                display: block;
+                transition: 0.3s;
+            }
+
+                .sidenav a:hover {
+                    color: #f1f1f1;
+                }
+
+            .sidenav .closebtn {
+                position: absolute;
+                top: 0;
+                right: 25px;
+                font-size: 28px;
+                margin-left: 50px;
+            }
+
+        @@media screen and (max-height: 450px) {
+            .sidenav {
+                padding-top: 15px;
+            }
+
+                .sidenav a {
+                    font-size: 18px;
+                }
+        }
+    </style>
+
+    <div id="mySidenav" class="sidenav">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        @Html.ActionLink("Categories(Model)", "Index", "categoriesTBs")
+        @Html.ActionLink("Books(ViewModel)", "Index", "Books")
+        @Html.ActionLink("Purchase(Model DtPicker)", "Index", "bookPurchases")
+        @Html.ActionLink("Sell(Model DtPicker)", "Index", "bookSales")
+        @Html.ActionLink("Ajax Single Crud", "Index", "AjaxBookPurchase")
+        @Html.ActionLink("Ajax Multiple Retrieve", "Index", "AjaxMultipleCrud")
+        @Html.ActionLink("Ajax Multiple Crud", "CategoryAndBooks", "AjaxMultipleCrud")
+
+
+    </div>
+    <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; Menu</span>
+
+    <script>
+                function openNav() {
+                    document.getElementById("mySidenav").style.width = "250px";
+                }
+
+                function closeNav() {
+                    document.getElementById("mySidenav").style.width = "0";
+                }
+    </script>
+}
+
+

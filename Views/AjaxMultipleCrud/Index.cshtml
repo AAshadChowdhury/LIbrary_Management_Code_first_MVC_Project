@@ -1,0 +1,150 @@
+﻿
+@{
+    ViewBag.Title = "Ajax CRUD in Multiple Table";
+}
+
+<h2>Index</h2>
+
+<p>To see the purchase and sale record history of a book, click on the respective buttons</p>
+
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+@*<script src="~/Scripts/jquery-3.3.1.min.js"></script>*@
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        GetAllBookRecords();
+
+        function GetAllBookRecords() {
+            $("BooksTable tbody").empty();
+            $.getJSON("/api/booksAPI",
+                function (data) { bindToBookGrid(data); });
+        }
+        function bindToBookGrid(data) {
+            // alert(data.length);
+            for (var i = 0; i < data.length; i++) {
+                var record = data[i];
+                $("#BooksTable tbody").append(`<tr><td>${record.id}</td><td>${record.name}</td><td>${record.categoriesTB.category}</td><td>${record.author}</td><td><img width="200" src="/coverimage/${record.cover}" alt="No Picture" /></td><td>${record.stockQuantity}</td><td><input type="button" onclick="_displayPurchaseByBook('${record.id}','${record.name}','${record.categoriesTB.category}','${record.author}')" id="purchaseHistory" class="btn btn-primary" value="Purchase History" /><input type="button" onclick="_displaySaleByBook('${record.id}','${record.name}','${record.categoriesTB.category}','${record.author}')" id="purchaseHistory" class="btn btn-warning" value="Sale History" /></td></tr>`);
+                 //alert(i);
+            };
+        }
+
+        _displayPurchaseByBook=function(id) {
+            //alert("/api/bookPurchasesAPI/GetBookPurchaseByBookID/"+id);
+            $.getJSON("/api/bookPurchasesAPI/GetBookPurchaseByBookID/"+ id,
+                function (data) { bindToPurchaseGrid(data); });
+        }
+
+        function bindToPurchaseGrid(data) {
+            $("#PurchaseTable tbody").empty();
+           // alert(data.length);
+            for (var i = 0; i < data.length; i++) {
+                var record = data[i];
+                //alert(record);
+                $("#PurchaseTable tbody").append(`<tr onclick="ShowSingleRecord('${record.purchaseID}','${record.bookID}','${record.quantity}','${record.purchaseDate}')"><td>${record.purchaseID}</td><td>${record.bookid}</td><td>${record.book.name}</td><td>${record.quantity}</td><td>${record.purchaseDate}</td></tr>`);
+               // alert(i);
+            };
+        }
+
+        _displaySaleByBook=function(id) {
+            //alert("/api/bookSalesAPI/GetBookSaleByBookID/"+id);
+            $.getJSON("/api/bookSalesAPI?bookid="+ id,
+                function (data) { bindToSaleGrid(data); });
+        }
+
+        function bindToSaleGrid(data) {
+            $("#SalesTable tbody").empty();
+           // alert(data.length);
+            for (var i = 0; i < data.length; i++) {
+                var record = data[i];
+                //alert(record);
+                $("#SalesTable tbody").append(`<tr onclick="ShowSingleRecord('${record.saleID}','${record.bookID}','${record.quantity}','${record.saleDate}')"><td>${record.saleID}</td><td>${record.bookid}</td><td>${record.book.name}</td><td>${record.quantity}</td><td>${record.saleDate}</td></tr>`);
+               // alert(i);
+            };
+        }
+    });
+
+
+
+
+</script>
+
+<style>
+    #purchaseID, #bookID, #quantity, #purchaseDate {
+        /*position:absolute;
+        left: 35%;*/
+    }
+
+    #bookID, #quantity, #purchaseDate {
+        width: 200px;
+    }
+</style>
+
+<div class="row">
+    @*<div class="col-sm-3">
+            @using (Html.BeginForm("index", "AjaxMultipleCrud", FormMethod.Post, new { @class = "form-vertical" }))
+            {
+                <div class="container">
+                    <div class="form-group">
+                        <label for="purchaseID"></label>
+                        <input type="hidden" name="purchaseID" id="purchaseID" />
+                    </div>
+                    <div class="form-group">
+                        <label for="bookID" class="control-label">bookID</label>
+                        <input type="number" name="bookID" id="bookID" required/>
+                        @Html.DropDownList("bookID", (IEnumerable<SelectListItem>)ViewBag.ddlBooks, new { @class = "form-control" })
+                    </div>
+                    <div class="form-group">
+                        <label for="quantity">quantity</label>
+                        <input type="number" name="quantity" id="quantity" class="form-control" required="required" />
+
+                    </div>
+                    <div class="form-group">
+                        <label for="purchaseDate">purchaseDate</label>
+                        <input type="date" name="purchaseDate" id="purchaseDate" class="form-control" required="required" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input type="button" id="purchase" class="btn btn-primary" value="Purchase" />
+                    <input type="button" id="edit" class="btn btn-warning" value="Edit" />
+                    <input type="button" id="delete" class="btn btn-danger" value="Delete" />
+
+                </div>
+                <div id="feedback"></div>
+            }
+        </div>*@
+    <div class="col-sm-9">
+        <table class="table table-condensed table-bordered table-responsive table-responsive" id="BooksTable">
+            <thead>
+                <tr><th>BookId</th><th>Book Name</th><th>Category</th><th>Author</th><th>Cover</th><th>Stock Quantity</th></tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+
+    </div>
+    <div class="col-sm-3">
+        <h1>Purchase Records</h1>
+        <table class="table table-condensed table-bordered table-responsive table-responsive" id="PurchaseTable">
+            <thead>
+                <tr><th>PurchaseID</th><th>bookID</th><th>book Name</th><th>quantity</th><th>purchaseDate</th></tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        <hr />
+        <h1>Sales Records</h1>
+
+        <table class="table table-condensed table-bordered table-responsive table-responsive" id="SalesTable">
+            <thead>
+                <tr><th>SaleID</th><th>BookID</th><th>book Name</th><th>quantity</th><th>SaleeDate</th></tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+<div>
+</div>
+

@@ -1,0 +1,83 @@
+﻿@model CF__MVC_Project.Models.bookVM
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>bookVM</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.author)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.author)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.publisher)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.publisher)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.category)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.category)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.stockQuantity)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.stockQuantity)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.price)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.price)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.cover)
+        </dt>
+
+        <dd>
+            @*@Html.DisplayFor(model => model.cover)*@
+            <img width="200" src="~/coverimage/@Html.DisplayFor(model => model.cover)" alt="No Picture" />
+
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.id }) |
+    @Html.ActionLink("Back to List", "Index")
+    @using (Html.BeginForm())
+    {
+        @Html.HiddenFor(model => model.id)
+        <input type="submit" value="Delete" class="btn btn-default" />
+    })
+
+</p>
+
